@@ -1,3 +1,3 @@
 # InHolland-Cloud Computing Development
 
-Examples and snippets.
+Examples, demos and snippets.

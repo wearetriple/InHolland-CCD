@@ -1,0 +1,135 @@
+﻿{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    
+  },
+  "variables": {
+    "baseName": "[uniquestring(resourceGroup().id, deployment().name)]",
+
+    "apiHostingPlanName": "[concat(variables('baseName'), '-plan')]",
+    
+    "apiName": "[concat(variables('baseName'), '-api')]",
+    "apiProperties": {
+      "phpVersion": "",
+      "pythonVersion": "",
+      "javaVersion": "",
+      "webSocketsEnabled": false,
+      "httpLoggingEnabled": true
+    },
+
+    "storageAccountName": "[concat(variables('baseName'))]",
+
+    "functionsName": "[concat(variables('baseName'), '-fun')]"
+  },
+  "resources": [
+
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[variables('storageAccountName')]",
+      "apiVersion": "2015-06-15",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "accountType": "Standard_LRS"
+      }
+    },
+    
+    {
+      "apiVersion": "2014-06-01",
+      "location": "West Europe",
+      "name": "[variables('apiHostingPlanName')]",
+      "properties": {
+        "name": "[variables('apiHostingPlanName')]",
+        "sku": "Free",
+        "workerSize": "Small",
+        "numberOfWorkers": 1
+      },
+      "type": "Microsoft.Web/serverfarms"
+    },
+
+    {
+      "apiVersion": "2015-08-01",
+      "dependsOn": [
+        "[concat('Microsoft.Web/serverfarms/', concat(variables('apiHostingPlanName')))]"
+      ],
+      "kind": "api",
+      "location": "West Europe",
+      "name": "[concat(variables('apiName'))]",
+      "properties": {
+        "name": "[variables('apiName')]",
+        "serverFarmId": "[variables('apiHostingPlanName')]",
+        "siteConfig": "[variables('apiProperties')]",
+        "httpsOnly": true
+      },
+      "resources": [
+        {
+          "apiVersion": "2015-08-01",
+          "type": "config",
+          "name": "connectionstrings",
+          "dependsOn": [
+            "[concat('Microsoft.Web/sites/', concat(variables('apiName')))]"
+          ],
+          "properties": {
+            "StorageConnectionString": {
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-06-15').key1)]",
+              "type": "Custom"
+            }
+          }
+        }
+      ],
+      "type": "Microsoft.Web/sites"
+    },
+    {
+      "apiVersion": "2015-08-01",
+      "type": "Microsoft.Web/sites",
+      "name": "[variables('functionsName')]",
+      "location": "[resourceGroup().location]",
+      "kind": "functionapp",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('apiHostingPlanName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+      ],
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('apiHostingPlanName'))]",
+        "siteConfig": {
+          "appSettings": [
+            {
+              "name": "AzureWebJobsDashboard",
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-06-15').key1)]"
+            },
+            {
+              "name": "AzureWebJobsStorage",
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-06-15').key1)]"
+            },
+            {
+              "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-06-15').key1)]"
+            },
+            {
+              "name": "WEBSITE_CONTENTSHARE",
+              "value": "[toLower(variables('functionsName'))]"
+            },
+            {
+              "name": "StorageConnectionString",
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-06-15').key1)]"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "functionsName": {
+      "type": "string",
+      "value": "[variables('functionsName')]"
+    },
+    "storageConnection": {
+      "type": "string",
+      "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-06-15').key1)]"
+    },
+    "storageRootUrl": {
+      "type": "string",
+      "value": "[concat('https://', variables('storageAccountName'), '.blob.core.windows.net/')]"
+    }
+  }
+}

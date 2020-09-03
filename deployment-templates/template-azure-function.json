@@ -1,0 +1,120 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "appService_name": {
+      "type": "string"
+    },
+    "appServicePlan_name": {
+      "type": "string"
+    },
+    "resourceGroup": {
+      "type": "string"
+    },
+    "storageaccount_name": {
+      "type": "string"
+    },
+    "appServicePlan_skuName": {
+      "type": "string",
+	  "defaultValue": "Y1"
+    },
+    "appServicePlan_skuTier": {
+      "type": "string",
+	  "defaultValue": "Dynamic"
+    },
+    "appServicePlan_skuFamily": {
+      "type": "string",
+	  "defaultValue": "Y"
+    },
+    "appServicePlan_skuSize": {
+      "type": "string",
+	  "defaultValue": "Y1"
+    },
+    "appServicePlan_workerSizeId": {
+      "type": "int",
+	  "defaultValue": 0
+    },
+    "location": {
+      "type": "String",
+	  "defaultValue": "West Europe"
+    },
+    "StorageAccountType": {
+      "type": "String",
+	  "defaultValue": "Standard_LRS"
+    }
+  },
+  "resources": [
+    {
+      "location": "[parameters('location')]",
+      "name": "[parameters('appService_name')]",
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2015-08-01",
+      "tags": {
+        "[concat('hidden-related:', resourceId(parameters('resourceGroup'),'Microsoft.Web/serverfarms', parameters('appServicePlan_name')))]": "empty"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverFarms', parameters('appServicePlan_name'))]"
+      ],
+      "kind": "functionapp",
+      "properties": {
+        "name": "[parameters('appService_name')]",
+        "kind": "functionapp",
+        "httpsOnly": true,
+        "reserved": false,
+        "serverFarmId": "[resourceId(parameters('resourceGroup'),'Microsoft.Web/serverfarms', parameters('appServicePlan_name'))]"
+      },
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "resources": [
+        {
+          "name": "appsettings",
+          "type": "config",
+          "apiVersion": "2015-08-01",
+          "dependsOn": [
+            "[concat('Microsoft.Web/Sites/', parameters('appService_name'))]"
+          ],
+          "properties": {
+            "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageaccount_name'), ';AccountKey=', listKeys(resourceId(parameters('resourceGroup'),'Microsoft.Storage/storageAccounts', parameters('storageaccount_name')), '2017-10-01').keys[0].value, ';EndpointSuffix=', 'core.windows.net')]",
+            "WEBSITE_CONTENTSHARE": "[toLower(parameters('appService_name'))]",
+            "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageaccount_name'), ';AccountKey=', listKeys(resourceId(parameters('resourceGroup'),'Microsoft.Storage/storageAccounts', parameters('storageaccount_name')), '2017-10-01').keys[0].value, ';EndpointSuffix=', 'core.windows.net')]",
+            "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageaccount_name'), ';AccountKey=', listKeys(resourceId(parameters('resourceGroup'),'Microsoft.Storage/storageAccounts', parameters('storageaccount_name')), '2017-10-01').keys[0].value, ';EndpointSuffix=', 'core.windows.net')]",
+            "FUNCTIONS_EXTENSION_VERSION": "~3",
+            "FUNCTIONS_WORKER_RUNTIME": "dotnet"
+          }
+        }
+      ]
+    },
+    {
+      "location": "[parameters('location')]",
+      "name": "[parameters('appServicePlan_name')]",
+      "type": "Microsoft.Web/serverFarms",
+      "apiVersion": "2015-08-01",
+      "sku": {
+        "name": "[parameters('appServicePlan_skuName')]",
+        "tier": "[parameters('appServicePlan_skuTier')]",
+        "family": "[parameters('appServicePlan_skuFamily')]",
+        "size": "[parameters('appServicePlan_skuSize')]"
+      },
+      "properties": {
+        "name": "[parameters('appServicePlan_name')]"
+      }
+    },
+    {
+      "location": "[parameters('location')]",
+      "name": "[parameters('storageaccount_name')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2017-10-01",
+      "tags": {
+        "[concat('hidden-related:', concat('/providers/Microsoft.Web/sites/', parameters('appService_name')))]": "empty"
+      },
+      "properties": {
+        "supportsHttpsTrafficOnly": true
+      },
+      "sku": {
+        "name": "[parameters('StorageAccountType')]"
+      },
+      "kind": "Storage"
+    }
+  ]
+}

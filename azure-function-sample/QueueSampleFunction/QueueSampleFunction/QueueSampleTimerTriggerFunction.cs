@@ -16,6 +16,10 @@ namespace QueueSampleFunction
         [FunctionName("QueueSampleTimerTriggerFunction")]
         public static void Run([TimerTrigger("0 */1 * * * *")]TimerInfo myTimer, ILogger log, [Queue("sample-queue")] CloudQueue queue)
         {
+            if (queue.CreateIfNotExists()) {
+                log.LogInformation($"Queue created");
+            }
+
             var queueMsg = new CloudQueueMessage($"MsgForQueue at {DateTime.Now}");
 
             queue.AddMessage(queueMsg);

@@ -2,74 +2,73 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "subscriptionId": {
-            "type": "string"
-        },
         "name": {
             "type": "string"
         },
-        "location": {
-            "type": "string"
-        },
-        "hostingPlanName": {
-            "type": "string"
-        },
-        "serverFarmResourceGroup": {
-            "type": "string"
-        },
         "alwaysOn": {
-            "type": "bool"
+            "type": "bool",
+            "defaultValue": true
         },
         "sku": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "Basic"
         },
         "skuCode": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "B1"
         },
         "workerSize": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "0"
         },
         "workerSizeId": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "0"
         },
         "numberOfWorkers": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "1"
         },
         "linuxFxVersion": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "PYTHON|3.8"
         }
+    },
+    "variables": {
+        "WebAppName": "[concat(parameters('name'), '-app')]",
+        "AppServicePlanName":  "[concat(parameters('name'), '-asp')]"
     },
     "resources": [
         {
             "apiVersion": "2018-11-01",
-            "name": "[parameters('name')]",
+            "name": "[variables('WebAppName')]",
             "type": "Microsoft.Web/sites",
-            "location": "[parameters('location')]",
+            "location": "[resourceGroup().location]",
             "tags": {},
             "dependsOn": [
-                "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
+                "[concat('Microsoft.Web/serverfarms/', variables('AppServicePlanName'))]"
             ],
             "properties": {
-                "name": "[parameters('name')]",
+                "name": "[variables('WebAppName')]",
                 "siteConfig": {
                     "appSettings": [],
                     "linuxFxVersion": "[parameters('linuxFxVersion')]",
                     "alwaysOn": "[parameters('alwaysOn')]"
                 },
-                "serverFarmId": "[concat('/subscriptions/', parameters('subscriptionId'),'/resourcegroups/', parameters('serverFarmResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('AppServicePlanName'))]",
                 "clientAffinityEnabled": false
             }
         },
         {
             "apiVersion": "2018-11-01",
-            "name": "[parameters('hostingPlanName')]",
+            "name": "[variables('AppServicePlanName')]",
             "type": "Microsoft.Web/serverfarms",
-            "location": "[parameters('location')]",
+            "location": "[resourceGroup().location]",
             "kind": "linux",
             "tags": {},
             "dependsOn": [],
             "properties": {
-                "name": "[parameters('hostingPlanName')]",
+                "name": "[variables('AppServicePlanName')]",
                 "workerSize": "[parameters('workerSize')]",
                 "workerSizeId": "[parameters('workerSizeId')]",
                 "numberOfWorkers": "[parameters('numberOfWorkers')]",

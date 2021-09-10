@@ -15,3 +15,5 @@ Examples, demos and snippets.
 [Azure Data Studio](https://docs.microsoft.com/en-us/sql/azure-data-studio/download-azure-data-studio?view=sql-server-ver15)
 
 [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
+
+[Azurite Blobstorage emulator (Azurite)](https://github.com/Azure/Azurite)

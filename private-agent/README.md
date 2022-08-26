@@ -12,7 +12,7 @@ Go to the following url
 https://dev.azure.com/{YOUR-ORGIZATION-NAME}/_settings/agentpools
 ```
 
-Replace `{YOUR-ORGIZATION-NAME}` with your own orginization (most student chose their student number for this).
+Replace `{YOUR-ORGIZATION-NAME}` with your own orginization (most students chose their student number for this).
 
 On this page you can create a new `agent pool` this is a collection of agents you can select for doing specific jobs in you pipelines.
 
@@ -22,7 +22,7 @@ Click `Add pool` on this page and for pool type select self-hosted as shown in t
 
 Once you click the Create button the new pool should show up in list of agent pools, click it and should see the message `No jobs have run on this agent pool`. Click the `New Agent` button. This will open a dialog showing you instructions to install the agent on your device.
 
-For windows you can simply download the zip extract it at a disired location open a powershell windows and change the directory to where files you just etrated are located.
+For windows you can simply download the zip extract it at a desired location open a powershell windows and change the directory to where files you just extract are located.
 
 open a new tab in your browser and open the following url.
 

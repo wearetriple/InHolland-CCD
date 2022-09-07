@@ -1,0 +1,30 @@
+trigger:
+  - master
+
+stages:
+  - stage: "BUILD"
+    dependsOn: []
+    condition: always()
+    jobs:
+    - job: "BUILD_DOTNET_APP"
+      pool:
+        vmImage: 'ubuntu-latest'
+      steps:
+        - checkout: self
+        - task: UseDotNet@2
+          displayName: 'Use .NET Core sdk 6.x'
+          inputs:
+            packageType: 'sdk'
+            version: '6.x'
+        - task: DotNetCoreCLI@2
+          displayName: 'Publish src'
+          inputs:
+            command: 'publish'
+            publishWebProjects: false
+            arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)'
+            projects: SampleWebApp/SampleWebApp/SampleWebApp.csproj
+        - task: PublishBuildArtifacts@1
+          displayName: 'Upload artifacts'
+          inputs:
+            pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+            artifactName: 'drop'

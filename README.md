@@ -2,9 +2,9 @@
 
 Examples, demos and snippets.
 
-# Triple meetup 15 sept 2022
+# Triple meetup 19 okt 2023
 
-[Meetup.com](https://www.meetup.com/triple/events/287898677/)
+[Meetup.com](https://www.meetup.com/triple-talks-meetup/events/295947373/)
 
 
 ## Links

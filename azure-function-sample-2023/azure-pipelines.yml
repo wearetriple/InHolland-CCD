@@ -1,0 +1,82 @@
+trigger:
+  - none
+
+parameters:
+  - name: ServiceConnection
+    type: string
+    default: "Team AI"
+  - name: UniquePrefix
+    type: string
+    default: inh01
+
+stages:
+  - stage: "BUILD"
+    dependsOn: []
+    condition: always()
+    jobs:
+    - job: "BUILD_DOTNET_APP"
+      pool:
+        vmImage: 'ubuntu-latest'
+      steps:
+        - checkout: self
+        - task: UseDotNet@2
+          displayName: 'Use .NET Core sdk 6.x'
+          inputs:
+            packageType: 'sdk'
+            version: '6.x'
+        - task: DotNetCoreCLI@2
+          displayName: 'Publish src'
+          inputs:
+            command: 'publish'
+            publishWebProjects: false
+            arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)'
+            projects: azure-function-sample-2023.csproj
+        - task: PublishBuildArtifacts@1
+          displayName: 'Upload artifacts'
+          inputs:
+            pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+            artifactName: 'drop'
+  - stage: "DEPLOY"
+    dependsOn: ["BUILD"]
+    condition: succeeded()
+    jobs:
+    - deployment: "DEPLOY_DOTNET_APP"
+      environment: "DEV"
+      variables:
+        - name: resourceTemplate
+          value: "$(Build.SourcesDirectory)/function.bicep"
+        - name: resourceGroupName
+          value: "INHOLLAND-2023"
+      pool:
+        vmImage: 'ubuntu-latest'
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - checkout: self
+              - download: current
+                artifact: drop
+              - task: AzureCLI@2
+                displayName: Resource Template Deployment
+                inputs:
+                  azureSubscription: "${{ parameters['ServiceConnection'] }}"
+                  scriptType: "pscore"
+                  scriptLocation: "inlineScript"
+                  inlineScript: |
+                    az group create -l "westeurope" -n "${{ variables.resourceGroupName }}"
+                    az deployment group create `
+                        -n "$(Build.BuildNumber)-$(System.PhaseAttempt)" `
+                        -g "${{ variables.resourceGroupName }}" `
+                        -f "${{ variables.ResourceTemplate }}" `
+                        --parameters prefix='${{ parameters['UniquePrefix'] }}' serviceTag='FUNC' environment='D' regionTag='AZWE'
+              - task: AzureRmWebAppDeployment@4
+                displayName: Function App Deployment
+                inputs:
+                  ConnectionType: "AzureRM"
+                  azureSubscription: "${{ parameters['ServiceConnection'] }}"
+                  appType: "functionApp"
+                  deployToSlotOrASE: false
+                  SlotName: deployment
+                  ResourceGroupName: "${{ variables.resourceGroupName }}"
+                  WebAppName: "${{ parameters['UniquePrefix'] }}-FUNC-D-AZWE-FA-1"
+                  packageForLinux: "$(Agent.BuildDirectory)/**/*.zip"

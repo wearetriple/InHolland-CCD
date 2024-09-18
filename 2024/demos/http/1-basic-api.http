@@ -1,0 +1,18 @@
+GET https://pokeapi.co/api/v2/pokemon/ditto
+
+###
+
+GET https://pokeapi.co/api/v2/pokemon?limit=10&offset=0
+
+###
+
+GET https://jsonplaceholder.typicode.com/posts
+
+###
+
+POST https://jsonplaceholder.typicode.com/posts
+Content-Type: application/json
+
+{
+    "hi": "Hello"
+}

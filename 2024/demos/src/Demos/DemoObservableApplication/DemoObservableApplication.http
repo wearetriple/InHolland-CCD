@@ -1,0 +1,12 @@
+@DemoObservableApplication_HostAddress = http://localhost:5031
+
+GET {{DemoObservableApplication_HostAddress}}/unobservable
+Accept: application/json
+
+###
+
+
+GET {{DemoObservableApplication_HostAddress}}/observable
+Accept: application/json
+
+###

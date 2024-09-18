@@ -115,6 +115,7 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
       scmIpSecurityRestrictionsUseMain: false
       scmMinTlsVersion: '1.2'
       loadBalancing: 'PerSiteRoundRobin'
+      http20Enabled: true
     }
     clientAffinityEnabled: false
     httpsOnly: true

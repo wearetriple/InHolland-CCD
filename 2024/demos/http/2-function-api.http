@@ -1,0 +1,15 @@
+POST http://localhost:7040/api/Function2
+Content-Type: application/json
+
+{
+    "number": 100
+}
+
+###
+
+POST https://ccd2024fa.azurewebsites.net/api/Function2
+Content-Type: application/json
+
+{
+    "number": 100
+}

@@ -11,7 +11,7 @@ public class Function1
     [Function("Function1")]
     public static async Task<IActionResult> RunAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequest req)
     {
-        if (++_executionCount % 11 > 5)
+        if (_executionCount++ % 10 >= 5)
         {
             await Task.Delay(3000);
             return new JsonResult(new { ImDead = true })

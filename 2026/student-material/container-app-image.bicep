@@ -4,9 +4,9 @@ param imageRepository string = 'api'
 param imageTag string = 'latest'
 param targetPort int = 8080
 
-var appName = 'inh-ccd-app-${namePrefix}'
-var acrName = 'inhccdacr${namePrefix}'
-var storageAccountName = 'inhccdstg${namePrefix}'
+var appName = 'inh-ccd-lab2-app-${namePrefix}'
+var acrName = 'inhccdlab2acr${namePrefix}'
+var storageAccountName = 'inhccdlab2stg${namePrefix}'
 
 var acrPullRoleId = subscriptionResourceId(
   'Microsoft.Authorization/roleDefinitions',

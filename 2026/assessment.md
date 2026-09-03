@@ -7,7 +7,18 @@ Using azure container apps, create an app that exposes an HTTP endpoint that sta
 The image creation process consists of multiple jobs. The first job fetches data for 50 weather stations. For each weather station, a separate job should be run to grab a public image and add the weather data to that image, in a fan-out fashion. After the image has its weather data, the job should store it in the blob storage.
 
 A sample of code for writing text on an image can be found here.
-<https://github.com/wearetriple/InHolland-CCD/tree/master/2026/samples/ImageEditor>
+[https://github.com/wearetriple/InHolland-CCD/tree/master/2026/samples/ImageEditor](https://github.com/wearetriple/InHolland-CCD/tree/master/2026/samples/ImageEditor)
+
+Allowed development services:
+
+- Azure Container apps (preferred)
+- Azure Function apps
+- Azure Web apps
+
+Allowed queueing services:
+
+- Azure Storage Queues
+- Azure Service Bus
 
 ## Must
 
@@ -15,12 +26,12 @@ A sample of code for writing text on an image can be found here.
 - Employ queues to process the jobs in the background so the initial call stays fast.
 - Employ Blob Storage to store all generated images and to expose the files.
 - Employ Queue Storage to create and read (+ delete) messages from the queue.
-- Employ Buienrader api to get weather station data <https://data.buienradar.nl/2.0/feed/json>
-- Employ any public api for retrieving an image to write the weather data on. e.g. <https://unsplash.com/developers>
+- Employ Buienrader api to get weather station data [https://data.buienradar.nl/2.0/feed/json](https://data.buienradar.nl/2.0/feed/json)
+- Employ any public api for retrieving an image to write the weather data on. e.g. [https://unsplash.com/developers](https://unsplash.com/developers)
 - Expose a publicly accessible API for fetching the generated images.
-- Provide HTTP files as API documentation.
+- Provide HTTP files as API documentation with working links to your API.
 - Create a fitting Bicep template (include the queues as well).
-- Add all files to GitHub repo and add Hijdra (<https://github.com/Hijdra>) or <mark.hijdra@wearetriple.com> to organization and project.
+- Add all files to GitHub repo and add Hijdra ([https://github.com/Hijdra](https://github.com/Hijdra)) or [mark.hijdra@wearetriple.com](mailto:mark.hijdra@wearetriple.com) to organization and project.
 - Create a deploy.ps1 script that publishes your code using the dotnet cli, creates the resources in azure using the Bicep template and deploys the function using the azure cli.
 - Employ **multiple** queues, one for starting the job and one for fetching and updating an image.
 - Deploy the code to azure and have a working endpoint.
@@ -34,10 +45,14 @@ A sample of code for writing text on an image can be found here.
 
 Having all **Must** requirements will result in a minimal passing grade, also having **Could** requirements results in a higher grade.
 
-Deadline: Friday 6 November 09:00 AM CET
+Deadline: Monday 9 November 09:00 AM CET
 
-Please inform me that you finished the assignment by mailing to <mark.hijdra@wearetriple.com>
+Please inform me that you finished the assignment by mailing to [mark.hijdra@wearetriple.com](mailto:mark.hijdra@wearetriple.com)
 
-Also include the link to the correct repository.
+Also include the following information:
 
-Do not use that mailbox for questions, as that mailbox is not read regularly.
+- Link to correct repository
+- Your name
+- Student number
+- Whether you've used AI or not
+  - This is allowed as long as you learn from the assignment

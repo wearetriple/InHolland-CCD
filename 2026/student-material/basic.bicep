@@ -1,10 +1,10 @@
 param location string = resourceGroup().location
 param namePrefix string
 
-var environmentName = 'inh-ccd-env-${namePrefix}'
-var appName = 'inh-ccd-app-${namePrefix}'
-var logAnalyticsName = 'inh-ccd-law-${namePrefix}'
-var storageAccountName = 'inhccdstg${namePrefix}' // 3–24 chars, lowercase alphanumeric only
+var environmentName = 'inh-ccd-lab2-env-${namePrefix}'
+var appName = 'inh-ccd-lab2-app-${namePrefix}'
+var logAnalyticsName = 'inh-ccd-lab2-law-${namePrefix}'
+var storageAccountName = 'inhccdlab2stg${namePrefix}' // 3–24 chars, lowercase alphanumeric only
 
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   name: logAnalyticsName
@@ -62,14 +62,14 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
             }
           ]
           resources: {
-            cpu: json('0.25')
-            memory: '0.5Gi'
+            cpu: any('0.5')
+            memory: '1.0Gi'
           }
         }
       ]
       scale: {
         minReplicas: 0
-        maxReplicas: 3
+        maxReplicas: 2
       }
     }
   }

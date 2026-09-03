@@ -32,10 +32,10 @@ az deployment group create `
 
 | Resource | Name |
 | --- | --- |
-| Container App | `inh-ccd-app-<suffix>` |
-| Container Apps environment | `inh-ccd-env-<suffix>` |
-| Log Analytics workspace | `inh-ccd-law-<suffix>` |
-| Storage account | `inhccdstg<suffix>` |
+| Container App | `inh-ccd-lab2-app-<suffix>` |
+| Container Apps environment | `inh-ccd-lab2-env-<suffix>` |
+| Log Analytics workspace | `inh-ccd-lab2-law-<suffix>` |
+| Storage account | `inhccdlab2stg<suffix>` |
 | Blob container | `images` (private) |
 
 The Container App has a **system-assigned managed identity** and **Storage Blob Data Reader** on the storage account. Environment variables `STORAGE_ACCOUNT_NAME` and `BLOB_CONTAINER_NAME` are set for the demo API. Do not put account keys in Bicep or Git.
@@ -55,7 +55,7 @@ az deployment group create `
 
 | Resource | Name |
 | --- | --- |
-| Container Registry | `inhccdacr<suffix>` (Basic SKU) |
+| Container Registry | `inhccdlab2acr<suffix>` (Basic SKU) |
 
 Grant **AcrPull** on the registry to the Container App managed identity (and **AcrPush** to whatever builds images, for example a GitHub Actions identity). That pull assignment is also created by `container-app-image.bicep`.
 

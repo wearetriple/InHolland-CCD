@@ -2,6 +2,14 @@
 
 Three templates, same `namePrefix` as the labs (for example `mh26`).
 
+## Login into Azure
+
+Login into Azure using
+
+``
+az login
+``
+
 ## Resource group
 
 ```powershell

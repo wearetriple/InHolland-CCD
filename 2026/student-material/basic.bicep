@@ -51,6 +51,16 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
         {
           name: 'api'
           image: 'mcr.microsoft.com/k8se/quickstart:latest'
+          env: [
+            {
+              name: 'STORAGE_ACCOUNT_NAME'
+              value: storageAccountName
+            }
+            {
+              name: 'BLOB_CONTAINER_NAME'
+              value: 'images'
+            }
+          ]
           resources: {
             cpu: json('0.25')
             memory: '0.5Gi'
@@ -92,6 +102,21 @@ resource imagesContainer 'Microsoft.Storage/storageAccounts/blobServices/contain
   name: 'images'
   properties: {
     publicAccess: 'None'
+  }
+}
+
+var blobDataReaderRoleId = subscriptionResourceId(
+  'Microsoft.Authorization/roleDefinitions',
+  '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1'
+) // Storage Blob Data Reader (includes user-delegation SAS)
+
+resource blobDataReader 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(storageAccount.id, containerApp.id, 'StorageBlobDataReader')
+  scope: storageAccount
+  properties: {
+    roleDefinitionId: blobDataReaderRoleId
+    principalId: containerApp.identity.principalId
+    principalType: 'ServicePrincipal'
   }
 }
 

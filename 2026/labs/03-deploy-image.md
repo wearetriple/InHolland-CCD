@@ -28,7 +28,7 @@ Run Bicep commands from `2026/student-material` (or pass full `-f` paths).
 
 ## Create the registry
 
-Admin user stays **off**. You push with `az acr login` (your Azure identity), not a registry password.
+Admin user stays **off**. You push with `az acr login` (your Azure identity), not a registry password. This template also creates a **user-assigned identity** and grants it **AcrPull**.
 
 ```powershell
 az deployment group create `
@@ -52,11 +52,11 @@ docker build -t "$loginServer/api:latest" .
 docker push "$loginServer/api:latest"
 ```
 
-Contributor on the resource group is enough to push in this lab. **AcrPull** for the Container App is created in the next step.
+Contributor on the resource group is enough to push in this lab. Building the image also gives **AcrPull** time to propagate.
 
 ## Point the Container App at the image
 
-.NET listens on port **8080** (the quickstart image used 80). This template also sets `STORAGE_ACCOUNT_NAME` / `BLOB_CONTAINER_NAME` and assigns **AcrPull** plus **Storage Blob Data Reader**.
+.NET listens on port **8080** (the quickstart image used 80). The app keeps its system-assigned identity for Storage, and uses the pull identity from `registry.bicep` for ACR.
 
 ```powershell
 Set-Location <path-to-workshop>/2026/student-material
@@ -81,8 +81,9 @@ The GitHub **build** workflow only compiles the project. It does not push the im
 
 | Problem | What to try |
 | --- | --- |
-| Image pull failed | Confirm `docker push` succeeded; name is `api:latest`; wait for AcrPull |
-| `/images` 500 or auth error | Wait for Storage Blob Data Reader; confirm `STORAGE_ACCOUNT_NAME` |
+| Image pull failed / Managed identity | Redeploy `registry.bicep`, wait a minute, then `container-app-image.bicep`. Confirm `docker push` used `api:latest`. |
+| App stuck in **Failed** | Redeploy `basic.bicep` to restore the quickstart image, then `registry.bicep`, then `container-app-image.bicep`. |
+| `/images` 500 or `CreateIfNotExists` / 403 | Reader cannot create containers. Use an image that only lists blobs; confirm `images` exists from `basic.bicep`. |
 | Still the quickstart welcome page | `container-app-image.bicep` not applied, or target port still 80 |
 | `docker push` denied | `az login` / `az acr login`; you need push rights on the RG |
 

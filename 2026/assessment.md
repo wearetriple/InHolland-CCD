@@ -7,7 +7,7 @@ Using azure container apps, create an app that exposes an HTTP endpoint that sta
 The image creation process consists of multiple jobs. The first job fetches data for 50 weather stations. For each weather station, a separate job should be run to grab a public image and add the weather data to that image, in a fan-out fashion. After the image has its weather data, the job should store it in the blob storage.
 
 A sample of code for writing text on an image can be found here.
-[https://github.com/wearetriple/InHolland-CCD/tree/master/2026/samples/ImageEditor](https://github.com/wearetriple/InHolland-CCD/tree/master/2026/samples/ImageEditor)
+[https://github.com/wearetriple/InHolland-CCD/tree/main/2026/samples/ImageEditor](https://github.com/wearetriple/InHolland-CCD/tree/main/2026/samples/ImageEditor)
 
 Allowed development services:
 

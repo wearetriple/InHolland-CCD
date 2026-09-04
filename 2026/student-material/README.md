@@ -56,12 +56,13 @@ az deployment group create `
 | Resource | Name |
 | --- | --- |
 | Container Registry | `inhccdlab2acr<suffix>` (Basic SKU) |
+| User-assigned identity | `inh-ccd-lab2-id-<suffix>` (**AcrPull**) |
 
-Grant **AcrPull** on the registry to the Container App managed identity (and **AcrPush** to whatever builds images, for example a GitHub Actions identity). That pull assignment is also created by `container-app-image.bicep`.
+Grant **AcrPush** separately to whatever builds images (for example a GitHub Actions identity).
 
 ## Point the Container App at your image
 
-Deploy **after** `basic.bicep`, `registry.bicep`, and pushing an image (for example `api:latest`) to ACR. Admin user stays off; the app pulls with its system-assigned identity.
+Deploy **after** `basic.bicep`, `registry.bicep`, and pushing an image (for example `api:latest`) to ACR. Admin user stays off; the app pulls with the user-assigned identity from `registry.bicep`.
 
 .NET containers usually listen on port **8080** (the quickstart image used port 80).
 

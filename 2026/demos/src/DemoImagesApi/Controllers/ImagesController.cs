@@ -10,15 +10,18 @@ public class ImagesController : ControllerBase
 {
     private readonly BlobServiceClient _blobs;
     private readonly IConfiguration _configuration;
+    private readonly IHostEnvironment _environment;
     private readonly ILogger<ImagesController> _logger;
 
     public ImagesController(
         BlobServiceClient blobs,
         IConfiguration configuration,
+        IHostEnvironment environment,
         ILogger<ImagesController> logger)
     {
         _blobs = blobs;
         _configuration = configuration;
+        _environment = environment;
         _logger = logger;
     }
 
@@ -27,7 +30,10 @@ public class ImagesController : ControllerBase
     {
         var containerName = _configuration["BLOB_CONTAINER_NAME"] ?? "images";
         var container = _blobs.GetBlobContainerClient(containerName);
-        await container.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
+        if (_environment.IsDevelopment())
+        {
+            await container.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
+        }
 
         var expiresOn = DateTimeOffset.UtcNow.AddHours(1);
         var urls = new List<string>();

@@ -3,7 +3,7 @@
 This lab continues **Lab 2**. Same suffix and resource group. `basic.bicep` must already be deployed.
 
 Starter files: [`../student-material/`](../student-material/).  
-API: [`../demos/src/Demos/DemoImagesApi`](../demos/src/Demos/DemoImagesApi) (`GET /images`).
+API: [`../demos/src/DemoImagesApi`](../demos/src/DemoImagesApi) (`GET /images`).
 
 ## Before you start
 
@@ -47,7 +47,7 @@ $loginServer = "$acr.azurecr.io"
 
 az acr login -n $acr
 
-Set-Location <path-to-workshop>/2026/demos/src/Demos/DemoImagesApi
+Set-Location <path-to-workshop>/2026/demos/src/DemoImagesApi
 docker build -t "$loginServer/api:latest" .
 docker push "$loginServer/api:latest"
 ```
@@ -71,7 +71,7 @@ If a role assignment already exists from `basic.bicep`, that is fine.
 
 ## Check the API
 
-Wait about a minute for RBAC, then open Application Url + `/images`, or use [`../demos/http/3-images-api.http`](../demos/http/3-images-api.http).
+Wait about a minute for RBAC, then open Application Url + `/images`, or use [`../demos/http/images-api.http`](../demos/http/images-api.http).
 
 You should get a JSON array of SAS URLs. `[]` means the app works but the `images` container is empty — upload a blob in the portal (same as Lab 1).
 

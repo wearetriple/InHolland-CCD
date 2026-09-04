@@ -11,9 +11,8 @@ A sample of code for writing text on an image can be found here.
 
 Allowed development services:
 
-- Azure Container apps (preferred)
+- Azure Container apps
 - Azure Function apps
-- Azure Web apps
 
 Allowed queueing services:
 

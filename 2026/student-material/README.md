@@ -40,7 +40,7 @@ az deployment group create `
 
 The Container App has a **system-assigned managed identity** and **Storage Blob Data Reader** on the storage account. Environment variables `STORAGE_ACCOUNT_NAME` and `BLOB_CONTAINER_NAME` are set for the demo API. Do not put account keys in Bicep or Git.
 
-A matching API is `2026/demos/src/Demos/DemoImagesApi` (`GET /images`). Push it to ACR as `api:latest`, then deploy `container-app-image.bicep`.
+A matching API is `2026/demos/src/DemoImagesApi` (`GET /images`). Push it to ACR as `api:latest`, then deploy `container-app-image.bicep`.
 
 ## Container Registry
 
@@ -74,6 +74,6 @@ az deployment group create `
 
 ## GitHub Actions (build)
 
-Copy `.github/workflows/build.yml` to the **root** of your GitHub repo (Actions only reads that path). Point `env.PROJECT` at your `.csproj` or `.sln`. Default is `DemoImagesApi/DemoImagesApi.csproj` (copy that project from `2026/demos/src/Demos/DemoImagesApi`).
+Copy `.github/workflows/build.yml` to the **root** of your GitHub repo (Actions only reads that path). Point `env.PROJECT` at your `.csproj` or `.sln`. Default is `DemoImagesApi/DemoImagesApi.csproj` (copy that project from `2026/demos/src/DemoImagesApi`).
 
 The workflow restores and builds on push to `main`, pull requests, and manual **Run workflow**. It does not deploy.

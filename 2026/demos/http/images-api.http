@@ -1,0 +1,9 @@
+GET https://localhost:7060/images
+
+###
+
+GET http://localhost:5060/images
+
+###
+
+GET https://inh-ccd-lab2-app-<suffix>.<region>.azurecontainerapps.io/images

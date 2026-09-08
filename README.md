@@ -6,7 +6,7 @@ Examples, demos and snippets.
 
 ### Example bicep file
 
-https://github.com/wearetriple/InHolland-CCD/blob/master/2024/student-material/basic.bicep
+https://github.com/wearetriple/InHolland-CCD/blob/master/2026/student-material/basic.bicep
 
 ### Tools
 
